@@ -16,7 +16,7 @@ except KeyError:
           file=sys.stderr)
     sys.exit(1)
 
-PROJECT_DIR = os.path.join(AOSP_DIR, 'development', 'vndk', 'tools', 'CPP2C',)
+PROJECT_DIR = os.path.join(AOSP_DIR, 'development', 'vndk', 'tools', 'cpp2c',)
 
 DEFAULT_CPPFLAGS = ['-std=c++17', '-x', 'c++'] # -x tells clang the input file is C++
 

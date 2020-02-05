@@ -1,7 +1,7 @@
 # CPP2C
 This is a tool used to generate a C interface from C++ source code using clang libtooling. The tool only supports a subset of C++ features.
 
-Very important note: This tool is not suppoosed to be run in isolation as is right now but is designed to be cloned in a specific location under an Android repo to work (under development/vndk/tools/CPP2C in the Android open source project).
+Very important note: This tool is not supposed to be run in isolation as is right now but is designed to be cloned in a specific location under an Android repo to work (under development/vndk/tools/cpp2c in the Android open source project).
 
 ## Building and Installation
 ```
@@ -9,12 +9,15 @@ Very important note: This tool is not suppoosed to be run in isolation as is rig
 repo init --depth=1 -u persistent-https://googleplex-android.git.corp.google.com/platform/manifest -b master
 repo sync -j16
 
+# Move tool to correct location
+mv cpp2c development/vndk/tools/
+
 # Build
 source build/envsetup.sh
 source development/vndk/tools/header-checker/android/envsetup.sh
 lunch aosp_arm64-userdebug
 croot
-cd development/vndk/tools/CPP2C
+cd development/vndk/tools/cpp2c
 mm
 ```
 
