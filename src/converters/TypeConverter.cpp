@@ -16,6 +16,8 @@
 
 #include "src/converters/TypeConverter.h"
 
+#include <iostream>
+
 #include "clang/ASTMatchers/ASTMatchers.h"
 #include "src/utils/Utils.h"
 
@@ -112,15 +114,48 @@ void TypeConverter::handleTemplate(const clang::CXXRecordDecl* crd) {
       template_specialization->getTemplateArgs();
 
   const clang::TemplateArgument template_arg =
-      argList[0];  // just get the first param for now as we
-                   // need basic support for smart pointers
+      argList[0];  // just get the first param for now as we need basic support
+                   // for smart pointers
 
-  const clang::QualType template_arg_type = template_arg.getAsType();
+  switch (template_arg.getKind()) {
+    case clang::TemplateArgument::ArgKind::Integral: {
+      clang::LangOptions lang_options;
+      clang::PrintingPolicy printing_policy(lang_options);
 
-  const TypeMetadata template_arg_metadata =
-      createTypeMetadata(options_, template_arg_type);
+      std::string template_arg_integral_name;
+      llvm::raw_string_ostream template_arg_ostream(template_arg_integral_name);
 
-  template_args_.push_back(template_arg_metadata);
+      template_arg.print(printing_policy, template_arg_ostream);
+      template_arg_ostream.flush();
+
+      std::cout << "Template argument integrals are not supported!"
+                << "Argument type = integral. Argument name = "
+                << template_arg_integral_name
+                << "Template name = " << template_name_
+                << std::endl;  // use template_arg.getAsIntegral() to get the
+                               // integral value
+      break;
+    }
+
+    case clang::TemplateArgument::ArgKind::Type: {
+      const clang::QualType template_arg_type = template_arg.getAsType();
+
+      const TypeMetadata template_arg_metadata =
+          createTypeMetadata(options_, template_arg_type);
+
+      template_args_.push_back(template_arg_metadata);
+
+      break;
+    }
+
+    default: {
+      std::cout << "Template argument type not supported!"
+                << "Argument type = " << template_arg.getKind()
+                << " (check clang::TemplateArgument::ArgKind). "
+                << "Template name = " << template_name_ << std::endl;
+      break;
+    }
+  }
 }
 
 bool TypeConverter::isConst(const clang::QualType& qt) {
